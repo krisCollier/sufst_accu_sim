@@ -1,7 +1,7 @@
 import serial, time, math
 import pandas as pd
 
-COM_PORTWEIN = "COM7"
+COM_PORTWEIN = "COM3"
 BAUDRATE = 9600 # Estimated
 NOMINAL_POWER = 7000
 FACTOR = 0.1 # Oli said divide the Power(W) by 10 :|
@@ -10,6 +10,8 @@ ROUND_UP = False
 ENDIAN = "big"
 
 ich_bekomme_gerätenennleistung = bytearray([0x54, 0x01, 0x04, 0x00, 0x59]) # To get the nominal power
+
+test_msg = bytearray([0x55, 0x01, 0x47, 0x00, 0x9D])
 
 # Maybe try 0 for node
 sollwert_für_P = bytearray([0xD2, 0x01, 0x34]) # To send power request
@@ -33,6 +35,8 @@ def calc_bytes_checksum(byte_arr: bytearray) -> bytearray:
     for byte in byte_arr:
         # byte_val = int(byte, 8)
         total_dec_val+=byte
+    if (total_dec_val // 2) == 0:
+        total_dec_val+=1
     return bytearray(int.to_bytes(total_dec_val, 2, byteorder=ENDIAN))
 
 def generate_power_req_msg(power: float) -> bytearray:
@@ -63,10 +67,14 @@ def test_comms():
 
 ## Start from me
 
-test_comms()
+# test_comms()
 
 # start_endurance()
 
+ser = serial.Serial(COM_PORTWEIN, BAUDRATE)
+
+ser.write(test_msg)
+print(ser.readline())
 
 ## TESTING
 def test_calc_bytes_checksum():
