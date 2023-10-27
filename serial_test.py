@@ -54,10 +54,11 @@ def start_endurance():
         time.sleep(0.1)
 
 def test_comms():
-    # ser = serial.Serial(COM_PORTWEIN, BAUDRATE)
+    ser = serial.Serial(COM_PORTWEIN, BAUDRATE)
     power = 70 # (W)
     msg = generate_power_req_msg(power)
     print(f"Sending power : {power} as {msg}")
+    ser.write(msg)
 
 
 ## Start from me
